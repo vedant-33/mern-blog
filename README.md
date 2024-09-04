@@ -1,11 +1,9 @@
 # Blogosphere Web App
-## Features
 
-- Full CRUD (Create, Read, Update, Delete) functionality for blog posts
-- User authentication with Firebase Google authentication 
-- Scalable architecture for future enhancements 
-- Well-maintained codebase with good architecture and UI 
-- User-friendly UI with an intuitive design
+- Developed a dynamic blogging platform using the MERN stack (MongoDB, Express, React, Node.js), enabling users to create, edit, and share blogs. 
+- Used ‘WYSIWYG’ editor (React quill), providing a rich text editor experience to the user. 
+- Implemented user authentication and authorization with JWT (JSON Web Tokens) and bcrypt, enhancing security and protecting sensitive user data. 
+- Implemented admin dashboard to manage users, comments and blogs for effective moderation. 
 
 ## Technologies Used 
 
