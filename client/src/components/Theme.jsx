@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux"
 
-const ThemeProvider = ({children}) => {
+const Theme = ({children}) => {
   const {theme}=useSelector(state=>state.theme)
   return (
     
@@ -12,4 +12,4 @@ const ThemeProvider = ({children}) => {
   )
 }
 
-export default ThemeProvider
+export default Theme
