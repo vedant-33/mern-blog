@@ -53,18 +53,22 @@ export const updateUser = async (req, res, next) => {
     next(error);
   }
 };
-export const deleteUser=async(req,res,next)=>{
+export const deleteUser = async (req, res, next) => {
   if (!req.user.isAdmin && req.user.id !== req.params.userId) {
-    return next(errorHandler(403, 'You are not allowed to update this user'));
+    return next(errorHandler(403, 'You are not allowed to delete this user'));
   }
+  
   try {
-    await User.findByIdAndDelete(req.params.userId)
-    res.header('Access-Control-Allow-Origin', 'http://localhost:5173').status(200,json({message:"User deleted"}))
+    await User.findByIdAndDelete(req.params.userId);
+    res
+      .header('Access-Control-Allow-Origin', 'http://localhost:5173')
+      .status(200)
+      .json({ message: "User deleted" });
   } catch (error) {
-    
-     next(error)
+    return next(error);
   }
-}
+};
+
 export const signout = (req, res, next) => {
   try {
     res
