@@ -8,6 +8,7 @@ export const create = async (req, res, next) => {
   if (!req.body.title || !req.body.content) {
     return next(errorHandler(400, 'Please provide all required fields'));
   }
+  // to remove any other character
   const slug = req.body.title
     .split(' ')
     .join('-')
@@ -70,6 +71,7 @@ export const getposts = async (req, res, next) => {
     next(error);
   }
 };
+
 
 export const deletepost = async (req, res, next) => {
   if (!req.user.isAdmin || req.user.id !== req.params.userId) {

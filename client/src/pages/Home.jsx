@@ -1,11 +1,12 @@
-import { Link } from 'react-router-dom';
-import CallToAction from '../components/CallToAction';
+import { Link,Navigate } from 'react-router-dom';
+import CallToAction from "../Components/CallToAction";
 import { useEffect, useState } from 'react';
-import PostCard from '../components/PostCard';
-
+import PostCard from '../Components/PostCard';
+import { useSelector } from "react-redux"
 export default function Home() {
   const [posts, setPosts] = useState([]);
-
+  const currentUser=useSelector(state=>state.user)
+ 
   useEffect(() => {
     const fetchPosts = async () => {
       const res = await fetch('/api/post/getPosts');
@@ -14,7 +15,10 @@ export default function Home() {
     };
     fetchPosts();
   }, []);
+  
   return (
+    currentUser ? 
+    (
     <div>
       <div className='flex flex-col gap-6 p-28 px-3 max-w-6xl mx-auto '>
         <h1 className='text-3xl font-bold lg:text-6xl'>Welcome to my Blog</h1>
@@ -29,7 +33,7 @@ export default function Home() {
           View all posts
         </Link>
       </div>
-      <div className='p-3 bg-amber-100 dark:bg-slate-700'>
+      <div className='p-3 bg-amber-100 dark:bg-slate-700 max-w-5xl max-h-4xl justify-center mx-auto'>
         <CallToAction />
       </div>
 
@@ -52,5 +56,7 @@ export default function Home() {
         )}
       </div>
     </div>
-  );
+  )
+  :<Navigate to='/sign-in'/>
+  )
 }

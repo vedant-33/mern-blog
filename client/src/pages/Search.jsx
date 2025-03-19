@@ -1,7 +1,7 @@
 import { Button, Select, TextInput } from 'flowbite-react';
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import PostCard from '../components/PostCard';
+import PostCard from '../Components/PostCard';
 
 export default function Search() {
   const [sidebarData, setSidebarData] = useState({
@@ -10,13 +10,11 @@ export default function Search() {
     category: 'uncategorized',
   });
 
-  console.log(sidebarData);
+  //console.log(sidebarData);
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [showMore, setShowMore] = useState(false);
-
   const location = useLocation();
-
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -45,7 +43,7 @@ export default function Search() {
         const data = await res.json();
         setPosts(data.posts);
         setLoading(false);
-        if (data.posts.length === 9) {
+        if (data.posts.length === 3) {
           setShowMore(true);
         } else {
           setShowMore(false);
@@ -56,7 +54,7 @@ export default function Search() {
   }, [location.search]);
 
   const handleChange = (e) => {
-    if (e.target.id === 'searchTerm') {
+    if (e.target.id === 'searchTerm' || '') {
       setSidebarData({ ...sidebarData, searchTerm: e.target.value });
     }
     if (e.target.id === 'sort') {
@@ -92,7 +90,7 @@ export default function Search() {
     if (res.ok) {
       const data = await res.json();
       setPosts([...posts, ...data.posts]);
-      if (data.posts.length === 9) {
+      if (data.posts.length === 3) {
         setShowMore(true);
       } else {
         setShowMore(false);

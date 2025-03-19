@@ -1,59 +1,54 @@
-import { Modal, Table, Button } from 'flowbite-react';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { Modal, Table, Button } from 'flowbite-react';
 import { HiOutlineExclamationCircle } from 'react-icons/hi';
-import { set } from 'mongoose';
 
-export default function DashPosts() {
-  const { currentUser } = useSelector((state) => state.user);
-  const [userPosts, setUserPosts] = useState([]);
-  const [showMore, setShowMore] = useState(true);
-  const [showModal, setShowModal] = useState(false);
-  const [postIdToDelete, setPostIdToDelete] = useState('');
-  useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const res = await fetch(`/api/post/getposts?userId=${currentUser._id}`);
-        const data = await res.json();
-        if (res.ok) {
-          setUserPosts(data.posts);
-          if (data.posts.length < 9) {
+const DashPosts = () => {
+  const {currentUser}=useSelector((state)=>state.user)
+  const [userPosts,setUserPosts]=useState([])
+  const [showMore,setShowMore]=useState(true)
+
+  console.log(userPosts);
+  useEffect(()=>{
+     const fetchPosts=async()=>{
+        try {
+          const res=await fetch(`/api/post/getposts?userId=${currentUser._id}`)
+          const data=await res.json()
+          if(res.ok) setUserPosts(data.posts)
+          if(data.length<9){
             setShowMore(false);
           }
         }
-      } catch (error) {
-        console.log(error.message);
-      }
-    };
-    if (currentUser.isAdmin) {
-      fetchPosts();
-    }
-  }, [currentUser._id]);
-
-  const handleShowMore = async () => {
-    const startIndex = userPosts.length;
-    try {
-      const res = await fetch(
-        `/api/post/getposts?userId=${currentUser._id}&startIndex=${startIndex}`
-      );
-      const data = await res.json();
-      if (res.ok) {
-        setUserPosts((prev) => [...prev, ...data.posts]);
-        if (data.posts.length < 9) {
-          setShowMore(false);
+        catch (error) {
+          console.log(error);
         }
+        
+      }
+      if(currentUser.isAdmin) fetchPosts()
+  },[currentUser._id])
+  
+   const handleShowMore=async()=>{
+    const startIndex=userPosts.length;
+    try {
+      const res=await fetch(`/api/post/getposts?userId=${currentUser._id}&startIndex=${startIndex}`)
+      const data=await res.json()
+      if(res.ok){
+        setUserPosts((prev)=>[...prev,...data.posts])
+        if(data.posts.length<9) setShowMore(false)
       }
     } catch (error) {
-      console.log(error.message);
-    }
-  };
+        console.log(error);
+    }  
+  }
 
+
+  const [showModal, setShowModal] = useState(false);
+  const [postIdToDelete, setPostIdToDelete] = useState('');
   const handleDeletePost = async () => {
     setShowModal(false);
     try {
-      const res = await fetch(
-        `/api/post/deletepost/${postIdToDelete}/${currentUser._id}`,
+      const res = await fetch(`/api/post/deletepost/${postIdToDelete}/${currentUser._id}`,
         {
           method: 'DELETE',
         }
@@ -62,7 +57,7 @@ export default function DashPosts() {
       if (!res.ok) {
         console.log(data.message);
       } else {
-        setUserPosts((prev) =>
+          setUserPosts((prev) =>
           prev.filter((post) => post._id !== postIdToDelete)
         );
       }
@@ -72,7 +67,7 @@ export default function DashPosts() {
   };
 
   return (
-    <div className='table-auto overflow-x-scroll md:mx-auto p-3 scrollbar scrollbar-track-slate-100 scrollbar-thumb-slate-300 dark:scrollbar-track-slate-700 dark:scrollbar-thumb-slate-500'>
+    <div className='table-auto overflow-x-scroll md:mx-auto p-3 scrollbar scrollbar-track-slate-700 scrollbar-thumb-slate-300 dark:scrollbar-track-slate-700 dark:scrollbar-thumb-slate-500'>
       {currentUser.isAdmin && userPosts.length > 0 ? (
         <>
           <Table hoverable className='shadow-md'>
@@ -87,7 +82,7 @@ export default function DashPosts() {
               </Table.HeadCell>
             </Table.Head>
             {userPosts.map((post) => (
-              <Table.Body className='divide-y'>
+              <Table.Body className='divide-y' key={post}>
                 <Table.Row className='bg-white dark:border-gray-700 dark:bg-gray-800'>
                   <Table.Cell>
                     {new Date(post.updatedAt).toLocaleDateString()}
@@ -111,13 +106,13 @@ export default function DashPosts() {
                   </Table.Cell>
                   <Table.Cell>{post.category}</Table.Cell>
                   <Table.Cell>
-                    <span
-                      onClick={() => {
-                        setShowModal(true);
+                    <span 
+                       onClick={()=>{
+                        setShowModal(true)
                         setPostIdToDelete(post._id);
                       }}
-                      className='font-medium text-red-500 hover:underline cursor-pointer'
-                    >
+                       className='font-medium text-red-500 hover:underline cursor-pointer'
+                       >
                       Delete
                     </span>
                   </Table.Cell>
@@ -133,17 +128,10 @@ export default function DashPosts() {
               </Table.Body>
             ))}
           </Table>
-          {showMore && (
-            <button
-              onClick={handleShowMore}
-              className='w-full text-teal-500 self-center text-sm py-7'
-            >
-              Show more
-            </button>
-          )}
+          {showMore && <button onClick={handleShowMore} className='w-full text-teal-500 self-center text-sm py-7'>Show More</button>}
         </>
       ) : (
-        <p>You have no posts yet!</p>
+        currentUser.isAdmin && (<p>You have no posts yet!</p>)
       )}
       <Modal
         show={showModal}
@@ -169,6 +157,9 @@ export default function DashPosts() {
           </div>
         </Modal.Body>
       </Modal>
+
     </div>
   );
 }
+
+export default DashPosts
