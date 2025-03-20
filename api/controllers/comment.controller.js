@@ -58,31 +58,43 @@ export const likeComment = async (req, res, next) => {
 };
 
 
-export const getComments=async(req,res,next)=>{
-  
+export const getComments = async (req, res, next) => {
   try {
     const startIndex = parseInt(req.query.startIndex) || 0;
     const limit = parseInt(req.query.limit) || 9;
     const sortDirection = req.query.sort === 'desc' ? -1 : 1;
-    const comments = await Comment.find()
+
+    let query = {}; // Default query
+
+    if (!req.user.isAdmin) {
+      query.userId = req.user.id; // Restrict to current user's comments if not admin
+    }
+
+    const comments = await Comment.find(query)
       .sort({ createdAt: sortDirection })
       .skip(startIndex)
       .limit(limit);
-    const totalComments = await Comment.countDocuments();
+
+    const totalComments = await Comment.countDocuments(query);
+
     const now = new Date();
     const oneMonthAgo = new Date(
       now.getFullYear(),
       now.getMonth() - 1,
       now.getDate()
     );
+
     const lastMonthComments = await Comment.countDocuments({
+      ...query,
       createdAt: { $gte: oneMonthAgo },
     });
+
     res.status(200).json({ comments, totalComments, lastMonthComments });
   } catch (error) {
     next(error);
   }
-}
+};
+
 
 
 export const deleteComment = async (req, res, next) => {

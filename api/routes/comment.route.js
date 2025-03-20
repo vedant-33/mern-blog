@@ -8,5 +8,5 @@ router.post('/create',verifyToken,createComment)
 router.get('/getPostComments/:postId',getPostComments)
 router.put('/likeComment/:commentId',verifyToken,likeComment)
 router.delete('/deleteComment/:commentId', verifyToken, deleteComment);
-router.get('/getcomments',getComments)
+router.get('/getcomments',verifyToken,getComments)
 export default router
